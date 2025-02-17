@@ -1,6 +1,7 @@
+```mdx
 ---
 title: 한글과 컴퓨터: 기술적 심층 분석
-description: 한글 인코딩, 조합형/완성형, 입력 시스템, 프로그래밍, 폰트, 그리고 디지털 환경에서의 한글 처리 기술 완벽 해부
+description: 한글 인코딩, 조합형/완성형, 입력 시스템, 프로그래밍, 폰트, 디지털 환경에서의 한글 처리 기술 완벽 해부
 template: splash
 hero:
   tagline: 세계가 인정한 과학적인 문자, 한글! 컴퓨터와 디지털 세상에서 한글은 어떻게 구현되고 활용될까요?
@@ -10,7 +11,7 @@ hero:
     - text: 한글 인코딩의 모든 것 (UTF-8, EUC-KR)
       link: /encoding/
       icon: globe
-      variant: primary # 더 강조되는 스타일
+      variant: primary
     - text: 조합형 vs 완성형: 역사와 기술적 차이
       link: /johab-wansung/
       icon: puzzle
@@ -42,9 +43,11 @@ import { Card, CardGrid, Tabs, TabItem, Code } from '@astrojs/starlight/componen
         </TabItem>
     </Tabs>
     <Code lang="python" title="Python에서의 인코딩 확인">
-{`text = "한글"
+```python
+text = "한글"
 print(len(text.encode('utf-8')))  # 3 (UTF-8)
-print(len(text.encode('euc-kr'))) # 4 (EUC-KR)`}
+print(len(text.encode('euc-kr'))) # 4 (EUC-KR)
+```
     </Code>
   </Card>
 
@@ -73,19 +76,21 @@ print(len(text.encode('euc-kr'))) # 4 (EUC-KR)`}
     *   **자연어 처리 (NLP):**  한글 텍스트를 분석하고 이해하는 기술입니다.  형태소 분석, 품사 태깅, 개체명 인식, 감성 분석 등 다양한 NLP 기술이 한글 처리에 활용됩니다.
 
     <Code lang="python" title="Python에서의 한글 문자열 처리">
-    {`text = "안녕하세요, 한글입니다."
+```python
+text = "안녕하세요, 한글입니다."
 print(text[0:5])  # "안녕하세" (부분 문자열)
 print("한글" in text)  # True (문자열 포함 여부)
 
 import re
 pattern = r"[가-힣]+" # 한글 음절 패턴
 matches = re.findall(pattern, text)
-print(matches) # ['안녕하세요', '한글입니다']`}
+print(matches) # ['안녕하세요', '한글입니다']
+```
     </Code>
 
   </Card>
 
-    <Card title="5. 한글 폰트: 디지털 글꼴의 미학" icon="type">
+  <Card title="5. 한글 폰트: 디지털 글꼴의 미학" icon="type">
     컴퓨터 화면이나 인쇄물에 한글을 표시하기 위해서는 **폰트**가 필요합니다. 한글 폰트는 글자의 모양(글리프)과 관련된 정보를 담고 있는 파일입니다.
 
     *  **TrueType (.ttf):**  가장 널리 사용되는 폰트 형식 중 하나입니다.  확대/축소 시에도 깨끗한 외곽선을 유지하는 벡터 기반 폰트입니다.
@@ -106,3 +111,6 @@ print(matches) # ['안녕하세요', '한글입니다']`}
 *   **한글 음절 (Hangul Syllables):**  `U+AC00` ~ `U+D7A3` (현대 한글에서 사용되는 모든 음절)
 
 이러한 유니코드 할당 덕분에, 한글은 전 세계 모든 컴퓨터 시스템에서 문제없이 표현되고 처리될 수 있습니다.
+```
+
+ 
