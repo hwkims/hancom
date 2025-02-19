@@ -5,25 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>한컴타자연습 캐릭터 챗</title>
     <style>
-        /* CSS 스타일 (Apple 디자인, 반응형, 모바일 최적화) */
+        /* CSS (파스텔톤, Apple 디자인, 반응형, 모바일 최적화) */
+        :root { /* CSS 변수 (색상 팔레트) */
+            --primary-color: #87CEFA; /* 연한 하늘색 */
+            --secondary-color: #F0F8FF; /* 앨리스 블루 */
+            --accent-color: #FFD700; /* 골드 */
+            --text-color: #333;
+            --background-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover-color: #77b3d4; /* 더 진한 하늘색 */
+        }
+
         body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-          background-color: #f0f2f5;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          margin: 0;
-          color: #1c1e21;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
         }
 
         .container {
             background-color: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px var(--shadow-color);
             width: 95%;
-            max-width: 600px; /* 최대 너비 */
+            max-width: 600px;
             display: flex;
             flex-direction: column;
         }
@@ -31,68 +42,68 @@
         h1 {
             text-align: center;
             margin-bottom: 25px;
-            color: #007aff;
-            font-size: 24px;
-            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 26px; /* 더 크게 */
+            font-weight: 700; /* 더 굵게 */
         }
 
         .content-wrapper {
             display: flex;
             flex-direction: column;
-            align-items: center; /* 중앙 정렬 */
+            align-items: center;
         }
 
-
-        .api-key-modal { /* 모달 스타일 */
-            display: none; /* 초기에는 숨김 */
+        /* 모달 */
+        .api-key-modal {
+            display: none; /* Initially hidden */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
+
         .api-key-modal.active {
-            display: flex; /* 활성화되면 표시 */
+            display: flex;
         }
 
         .modal-content {
             background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            padding: 25px; /* Increased padding */
+            border-radius: 14px; /* More rounded */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow */
             text-align: center;
-            max-width: 80%; /* 모달 너비 제한 */
+            max-width: 90%; /* Wider modal */
         }
 
         #api-key {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
             font-size: 16px;
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Increased margin */
             width: 100%;
             box-sizing: border-box;
         }
 
         #save-api-key {
-            padding: 10px 18px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
             border: none;
-            background-color: #007aff;
+            background-color: var(--primary-color);
             color: white;
-            font-size: 16px;
+            font-size: 17px; /* Larger font */
             cursor: pointer;
             transition: background-color 0.2s;
         }
 
         #save-api-key:hover {
-            background-color: #0066cc;
+            background-color: var(--button-hover-color);
         }
-
 
         .character-select {
             margin-bottom: 20px;
@@ -100,14 +111,15 @@
         }
 
         #character-dropdown {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
+            padding: 12px; /* Increased padding */
+            border-radius: 10px; /* More rounded */
+            border: 1px solid var(--border-color);
             font-size: 16px;
             background-color: white;
             width: auto;
-            min-width: 150px;
+            min-width: 160px; /* Wider dropdown */
         }
+
 
         .character-display {
             display: flex;
@@ -117,51 +129,51 @@
         }
 
         #character-image {
-            width: 147px; /* 이미지 크기 */
+            width: 147px;
             height: 155px;
-            border: 2px solid #d0d0d0;
+            border: 2px solid var(--border-color);
             border-radius: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 10px; /* Reduced margin */
             background-color: white;
-            object-fit: contain; /* 비율 유지, 여백 허용 */
+            object-fit: contain;
         }
 
         #character-name {
-            font-size: 17px;
-            font-weight: 500;
+            font-size: 18px;
+            font-weight: 600; /* Bolder */
         }
 
         .chat-messages {
-            border: 1px solid #d0d0d0;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
             width: 100%;
-            min-height: 120px;
+            min-height: 150px; /* Increased min-height */
             overflow-y: auto;
-            background-color: #f8f9fa;
+            background-color: var(--secondary-color);
         }
 
         .chat-message {
-            margin-bottom: 7px;
-            padding: 8px 12px;
-            border-radius: 10px;
+            margin-bottom: 8px;
+            padding: 10px 14px; /* Increased padding */
+            border-radius: 12px; /* More rounded */
             word-wrap: break-word;
         }
 
         .user-message {
-            background-color: #e4f0ff;
-            color: #004085;
+            background-color: #e0f7fa; /* Lighter teal */
+            color: #004d40; /* Dark teal */
             text-align: right;
             margin-left: auto;
-            border: 1px solid #b8daff;
+            border: 1px solid #b2dfdb; /* Lighter teal border */
         }
 
         .bot-message {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #dcedc8; /* Light green */
+            color: #33691e;  /* Dark green */
             margin-right: auto;
-            border: 1px solid #c3e6cb;
+            border: 1px solid #c5e1a5; /* Lighter green border */
         }
 
         .user-input {
@@ -173,31 +185,27 @@
 
         #user-message {
             flex-grow: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
+            padding: 12px; /* Increased padding */
+            border-radius: 10px; /* More rounded */
+            border: 1px solid var(--border-color);
             font-size: 16px;
             background-color: white;
         }
-      /* 제거: 감정 선택 부분 스타일
-        #emotion-dropdown {
 
-        }
-      */
         #send-button {
-            padding: 10px 18px;
-            border-radius: 8px;
+            padding: 12px 20px; /* Increased padding */
+            border-radius: 10px;
             border: none;
-            background-color: #007aff;
+            background-color: var(--primary-color);
             color: white;
-            font-size: 16px;
+            font-size: 17px; /* Larger font */
             cursor: pointer;
             transition: background-color 0.2s;
             white-space: nowrap;
         }
 
         #send-button:hover {
-            background-color: #0066cc;
+            background-color: var(--button-hover-color);
         }
 
         /* 로딩 메시지 */
@@ -254,13 +262,6 @@
 
                 <div class="user-input">
                     <input type="text" id="user-message" placeholder="메시지를 입력하세요...">
-                    <!-- 제거: 감정 선택 부분
-                    <select id="emotion-dropdown">
-                        <option value="normal">🙂 평상시</option>
-                        <option value="positive">😄 긍정</option>
-                        <option value="negative">😠 부정</option>
-                    </select>
-                    -->
                     <button id="send-button">전송</button>
                 </div>
             </div>
@@ -273,9 +274,8 @@
     </div>
 
     <script>
-     document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
       const characterDropdown = document.getElementById('character-dropdown');
-      // 제거: const emotionDropdown = document.getElementById('emotion-dropdown');
       const characterImage = document.getElementById('character-image');
       const characterNameDisplay = document.getElementById('character-name');
       const chatMessages = document.getElementById('chat-messages');
@@ -286,7 +286,7 @@
       const saveApiKeyButton = document.getElementById('save-api-key');
       const loadingMessage = document.getElementById('loading-message');
 
-      // 캐릭터 정보 (이미지 경로, *폴더 구조* 반영)
+      // 캐릭터 정보 (이미지 경로, 폴더 구조 반영)
       const CHARACTERS = {
         0: { name: "어린이 男", normal: "1/1.webp", positive: "2/1.webp", negative: "3/1.webp" },
         1: { name: "어린이 女", normal: "1/2.webp", positive: "2/2.webp", negative: "3/2.webp" },
@@ -333,17 +333,15 @@
         async function callGeminiAPI(prompt) {
             const apiKey = loadApiKey();
             if (!apiKey) {
-                // alert('Gemini API 키가 없습니다.  API 키를 입력하고 저장해주세요.'); // 주석 처리
-                // return "API 키가 없어 Gemini AI를 사용할 수 없습니다.  대신 기본 응답을 표시합니다."; // 기본 응답
                 return null; // Gemini API 호출 안 함
             }
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-            // 변경: 요청 형식을 JSON으로
+            // JSON 요청 형식
             const requestBody = {
               contents: [{ parts: [{ text: prompt }] }],
-              "safetySettings": [ // 안전 설정 추가 (필요에 따라 조정)
+              "safetySettings": [
                 {
                    "category": "HARM_CATEGORY_HARASSMENT",
                    "threshold": "BLOCK_MEDIUM_AND_ABOVE"
@@ -369,12 +367,12 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(requestBody), // JSON 형식으로
+                    body: JSON.stringify(requestBody),
                 });
 
                 if (!response.ok) {
-                  const errorData = await response.json(); // 에러 응답 파싱
-                  const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생'; //에러 메시지
+                  const errorData = await response.json();
+                  const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생';
                   throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
                 }
 
@@ -398,30 +396,29 @@
 
         let imagePath = character.normal; // 기본 이미지
 
-        // 감정에 따라 이미지 변경 (폴더 구조 사용)
+        // 감정에 따라 이미지 변경 (폴더 구조 사용, 이미지 존재 확인)
         if (emotion === 'positive' && character.positive) {
             imagePath = character.positive;
         } else if (emotion === 'negative' && character.negative) {
             imagePath = character.negative;
         }
 
-        // 이미지 폴더 및 파일 존재 확인 (최종 폴백)
         const img = new Image();
         img.onload = () => { characterImage.src = imagePath; };
         img.onerror = () => {
             console.error(`Image not found: ${imagePath}, using default.`);
-            characterImage.src = character.normal; // 해당 감정 이미지 없으면 normal
+            characterImage.src = character.normal; // 없으면 normal
         };
         img.src = imagePath;
         characterNameDisplay.textContent = character.name;
     }
 
 
+
       // 메시지 전송
         async function sendMessage() {
             const characterIndex = characterDropdown.value;
             const userMessage = userMessageInput.value;
-            //제거 const emotion = emotionDropdown.value;
 
             if (!userMessage.trim()) {
                 alert('메시지를 입력해주세요.');
@@ -514,12 +511,8 @@
         // 캐릭터 변경
         characterDropdown.addEventListener('change', () => {
             const selectedCharacterIndex = characterDropdown.value;
-            // 제거: const selectedEmotion = emotionDropdown.value;
             updateCharacterDisplay(selectedCharacterIndex, 'normal'); //캐릭터 바꿀때 normal
         });
-
-        // 제거: 감정 변경 (Gemini가 처리)
-        // emotionDropdown.addEventListener('change', ...);
 
         // 전송 버튼
         sendButton.addEventListener('click', sendMessage);
@@ -532,7 +525,7 @@
         });
 
         loadApiKey();       // 페이지 로드 시 API 키 불러오기
-        initializeCharacter(); // 캐릭터 초기화, 설정.
+        initializeCharacter();
     });
     </script>
 </body>
