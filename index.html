@@ -1,0 +1,830 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한컴타자연습 캐릭터 챗</title>
+    <style>
+        /* CSS 스타일 (이전과 동일) */
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .api-key-input {
+          margin-bottom: 20px;
+          text-align: center;
+        }
+        #api-key {
+          padding: 8px;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+          font-size: 16px;
+          margin-right: 5px;
+        }
+        #save-api-key {
+          padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
+        /* 메뉴 스타일 */
+        .menu {
+            width: 220px;
+            margin-right: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .menu-item {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            background-color: white;
+        }
+
+        .menu-item:hover {
+            background-color: #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 5px;
+        }
+
+        .menu-item .menu-name {
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .character-select {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #character-dropdown {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        .character-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        #character-image {
+            width: 180px;
+            height: 180px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: white;
+        }
+
+        #character-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            width: 100%;
+            min-height: 150px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #e2f0ff;
+            color: #004085;
+            text-align: right;
+            margin-left: auto;
+            border: 1px solid #b8daff;
+        }
+
+        .bot-message {
+            background-color: #d4edda;
+            color: #155724;
+            margin-right: auto;
+            border: 1px solid #c3e6cb;
+        }
+
+        .user-input {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        #user-message {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        #emotion-dropdown {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        #send-button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #send-button:hover {
+            background-color: #45a049;
+        }
+
+
+        /* 연습/게임 화면 스타일 */
+        .practice-area, .game-area {
+            width: 100%;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            display: none; /* 초기 숨김 */
+        }
+        .practice-area.active, .game-area.active {
+            display: block; /* 활성 시 표시 */
+        }
+
+        #practice-content, #game-content {
+            font-size: 24px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #typing-input {
+            font-size: 24px;
+            font-family: monospace;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 2px solid #4CAF50;
+            border-radius: 6px;
+        }
+
+        #practice-result, #game-result{
+            margin-top:10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        /* 로딩 메시지 */
+        .loading-message {
+            display: none;  /* 초기에는 숨김 */
+            position: fixed; /* 화면 중앙 고정 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7); /* 반투명 배경 */
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000; /* 다른 요소 위에 표시 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>한컴타자연습 캐릭터 챗</h1>
+
+        <!-- API 키 입력 -->
+          <div class="api-key-input">
+            <label for="api-key">Gemini API Key:</label>
+            <input type="password" id="api-key" placeholder="API 키를 입력하세요">
+            <button id="save-api-key">저장</button>
+          </div>
+
+        <div class="content-wrapper">
+            <!-- 메뉴 영역 -->
+            <div class="menu">
+                <div class="menu-item" data-menu-id="a">
+                    <img src="a/a.webp" alt="자리 연습">
+                    <div class="menu-name">자리 연습</div>
+                </div>
+                <div class="menu-item" data-menu-id="b">
+                    <img src="a/b.webp" alt="낱말 연습">
+                    <div class="menu-name">낱말 연습</div>
+                </div>
+                <div class="menu-item" data-menu-id="c">
+                    <img src="a/c.webp" alt="짧은 글 연습">
+                    <div class="menu-name">짧은 글 연습</div>
+                </div>
+                <div class="menu-item" data-menu-id="d">
+                    <img src="a/d.webp" alt="긴 글 연습">
+                    <div class="menu-name">긴 글 연습</div>
+                </div>
+                <div class="menu-item" data-menu-id="e">
+                    <img src="a/e.webp" alt="케이크 던지기">
+                    <div class="menu-name">케이크 던지기</div>
+                </div>
+                <div class="menu-item" data-menu-id="f">
+                    <img src="a/f.webp" alt="해상구조 SOS">
+                    <div class="menu-name">해상구조 SOS</div>
+                </div>
+                <div class="menu-item" data-menu-id="g">
+                    <img src="a/g.webp" alt="환경설정">
+                    <div class="menu-name">환경설정</div>
+                </div>
+            </div>
+
+            <!-- 챗 영역 -->
+            <div class="chat-container">
+                <div class="character-select">
+                    <label for="character-dropdown">캐릭터 선택:</label>
+                    <select id="character-dropdown">
+                        <option value="0">어린이 男</option>
+                        <option value="1">어린이 女</option>
+                        <option value="2">청소년 男</option>
+                        <option value="3">청소년 女</option>
+                        <option value="4">중년 男</option>
+                        <option value="5">중년 女</option>
+                    </select>
+                </div>
+
+                <div class="character-display">
+                    <img id="character-image" src="" alt="캐릭터 이미지">
+                    <div id="character-name"></div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <!-- 대화 메시지 -->
+                </div>
+
+                <div class="user-input">
+                    <input type="text" id="user-message" placeholder="메시지를 입력하세요...">
+                    <select id="emotion-dropdown">
+                        <option value="normal">🙂 평상시</option>
+                        <option value="positive">😄 긍정</option>
+                        <option value="negative">😠 부정</option>
+                    </select>
+                    <button id="send-button">전송</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 연습 화면 -->
+        <div class="practice-area" id="practice-area">
+            <div id="practice-content"></div>
+            <input type="text" id="typing-input" placeholder="여기에 타이핑하세요">
+            <div id="practice-result"></div>
+        </div>
+
+        <!-- 게임 화면 -->
+        <div class="game-area" id="game-area">
+            <div id="game-content"></div>
+            <!-- TODO: 게임 UI 추가 -->
+            <div id="game-result"></div>
+        </div>
+    </div>
+
+    <!-- 로딩 메시지 -->
+    <div class="loading-message" id="loading-message">
+        로딩 중...
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const characterDropdown = document.getElementById('character-dropdown');
+        const emotionDropdown = document.getElementById('emotion-dropdown');
+        const characterImage = document.getElementById('character-image');
+        const characterNameDisplay = document.getElementById('character-name');
+        const chatMessages = document.getElementById('chat-messages');
+        const userMessageInput = document.getElementById('user-message');
+        const sendButton = document.getElementById('send-button');
+        const apiKeyInput = document.getElementById('api-key');
+        const saveApiKeyButton = document.getElementById('save-api-key');
+        const loadingMessage = document.getElementById('loading-message');
+
+
+        // --- 메뉴 관련 변수 ---
+        const menuItems = document.querySelectorAll('.menu-item');
+        const practiceArea = document.getElementById('practice-area');
+        const gameArea = document.getElementById('game-area');
+        const practiceContent = document.getElementById('practice-content');
+        const gameContent = document.getElementById('game-content');
+        const typingInput = document.getElementById('typing-input');
+        const practiceResult = document.getElementById('practice-result');
+        const gameResult = document.getElementById('game-result');
+
+
+        let currentMenuId = null;
+        let practiceInterval = null;
+
+        // 캐릭터 정보 (이미지 경로 포함)
+        const CHARACTERS = {
+            0: { name: "어린이 男", normal: "1/1.webp", positive: "1/1_positive.webp", negative: "1/1_negative.webp" },
+            1: { name: "어린이 女", normal: "1/2.webp", positive: "1/2_positive.webp", negative: "1/2_negative.webp" },
+            2: { name: "청소년 男", normal: "1/3.webp", positive: "1/3_positive.webp", negative: "1/3_negative.webp" },
+            3: { name: "청소년 女", normal: "1/4.webp", positive: "1/4_positive.webp", negative: "1/4_negative.webp" },
+            4: { name: "중년 男", normal: "1/5.webp", positive: "1/5_positive.webp", negative: "1/5_negative.webp" },
+            5: { name: "중년 女", normal: "1/6.webp", positive: "1/6_positive.webp", negative: "1/6_negative.webp" },
+        };
+        //연습 컨텐츠
+        const PRACTICE_CONTENT = {
+            "a": () => "".join(Array.from({length: 20}, () => "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ1234567890-=!@#$%^&*()_+"[Math.floor(Math.random() * 36)])),
+            "b": () => ["사랑", "행복", "친구", "가족", "학교", "컴퓨터", "바다", "하늘", "별", "강아지"][Math.floor(Math.random() * 10)],
+            "c": () => [
+                "푸른 하늘이 아름답습니다.", "오늘 날씨가 정말 좋습니다.", "맛있는 점심을 먹었습니다.",
+                "친구들과 즐거운 시간을 보냈습니다.", "새로운 게임을 시작했습니다."
+            ][Math.floor(Math.random() * 5)],
+            "d": () => [
+                "옛날 옛적 한 마을에 착한 나무꾼이 살았습니다. 나무꾼은 매일 산에 올라가 나무를 베어 생계를 유지했습니다.",
+                "2024년, 인공지능 기술은 놀라운 발전을 이루었습니다. 사람들은 이제 인공지능 비서와 함께 일상생활을 합니다."
+            ][Math.floor(Math.random() * 2)]
+        };
+
+        // 게임 컨텐츠 (TODO)
+        const GAME_CONTENT = {
+            "e": () => "케이크",
+            "f": () => "SOS"
+        }
+
+      // 로딩 메시지 표시/숨김 함수
+        function showLoading(show) {
+            loadingMessage.style.display = show ? 'block' : 'none';
+        }
+
+
+        // API 키 저장
+        saveApiKeyButton.addEventListener('click', () => {
+            const apiKey = apiKeyInput.value.trim();
+            if (apiKey) {
+                localStorage.setItem('geminiApiKey', apiKey);
+                alert('API 키가 저장되었습니다.');
+                apiKeyInput.value = ''; // 입력 필드 초기화
+            } else {
+                alert('API 키를 입력해주세요.');
+            }
+        });
+
+        // API 키 불러오기
+        function loadApiKey() {
+            const savedApiKey = localStorage.getItem('geminiApiKey');
+            //  if (savedApiKey) {  // 주석 처리: API 키 없어도 실행은 되도록
+            //      apiKeyInput.value = savedApiKey;
+            //  }
+            return savedApiKey; // 반환
+        }
+
+        // 캐릭터 초기화
+        function initializeCharacter() {
+            const firstCharacterIndex = characterDropdown.value;
+            updateCharacterDisplay(firstCharacterIndex, 'normal');
+        }
+
+        // Gemini API 호출 함수
+        async function callGeminiAPI(prompt) {
+            const apiKey = loadApiKey();
+            if (!apiKey) {
+                // alert('Gemini API 키가 없습니다.  API 키를 입력하고 저장해주세요.'); // 주석 처리
+                // return "API 키가 없어 Gemini AI를 사용할 수 없습니다.  대신 기본 응답을 표시합니다."; // 기본 응답
+                return null; // Gemini API 호출 안 함
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const requestBody = {
+                contents: [{ parts: [{ text: prompt }] }],
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (!response.ok) {
+                  const errorData = await response.json(); // 에러 응답 파싱
+                    const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생'; //에러 메시지
+                    throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                alert(`Gemini API 호출 오류: ${error.message}`);
+                return "Gemini API 호출 중 오류가 발생했습니다."; // 오류 시 기본 응답
+            }
+        }
+
+
+
+        // 캐릭터 이미지/이름 업데이트
+        function updateCharacterDisplay(characterIndex, emotion) {
+            const character = CHARACTERS[characterIndex];
+            if (!character) {
+              console.error("Character not found for index:", characterIndex);
+              return;
+            }
+            let imagePath = character.normal; // 기본 이미지
+
+            // 감정에 따른 이미지 변경, 어린이 女 예외처리
+            if (character.name === "어린이 女") {
+                if (emotion === 'positive' && character.negative) {
+                    imagePath = character.negative;
+                } else if (emotion === 'negative' && character.positive) {
+                    imagePath = character.positive;
+                }
+            } else { //어린이 여자 아니면
+                if (emotion === 'positive' && character.positive) {
+                    imagePath = character.positive;
+                } else if (emotion === 'negative' && character.negative) {
+                    imagePath = character.negative;
+                }
+            }
+
+            characterImage.src = imagePath;
+            characterNameDisplay.textContent = character.name;
+        }
+
+
+        // 메시지 전송
+        async function sendMessage() {
+            const characterIndex = characterDropdown.value;
+            const userMessage = userMessageInput.value;
+            const emotion = emotionDropdown.value;
+
+            if (!userMessage.trim()) {
+                alert('메시지를 입력해주세요.');
+                return;
+            }
+
+            appendMessage(userMessage, 'user-message');
+            userMessageInput.value = '';
+            userMessageInput.disabled = true;
+            sendButton.disabled = true;
+            showLoading(true); // 로딩 시작
+
+            try {
+
+                // 메뉴에 따른 프롬프트
+                let prompt = "";
+               if (currentMenuId && (currentMenuId === 'a' || currentMenuId === 'b' || currentMenuId === 'c' || currentMenuId === 'd')) {
+                  prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다.  사용자가 "${MENU_DATA[currentMenuId].name}" 연습 중입니다. 감정: ${emotion} 사용자 메시지: ${userMessage}  1~2 문장으로 간결하게 응답해주세요.`;
+                } else if (currentMenuId && (currentMenuId === 'e' || currentMenuId === 'f')) {
+                  prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다.  사용자가 "${MENU_DATA[currentMenuId].name}" 게임 중입니다. 감정: ${emotion} 사용자 메시지: ${userMessage}  1~2 문장으로 간결하게 응답해주세요.`;
+                }else if (currentMenuId && currentMenuId === 'g') { // 환경설정
+                  prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다.  사용자가 "환경설정" 메뉴를 선택했습니다. 감정: ${emotion} 사용자 메시지: ${userMessage}  1~2 문장으로 간결하게 응답해주세요.`;
+                }
+
+                else { // 일반 대화
+                   prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다. 감정: ${emotion} 사용자 메시지: ${userMessage} 1~2 문장으로 간결하게 응답해주세요.`;
+                }
+
+                // Gemini API 호출 (API 키가 있는 경우에만)
+                const geminiResponse = await callGeminiAPI(prompt);
+
+                if(geminiResponse) {
+                  updateCharacterDisplay(characterIndex, emotion);
+                  appendMessage(geminiResponse, 'bot-message');
+                } else {
+                  // Gemini API 응답이 없을 때의 기본 응답 (예: 캐릭터별 기본 대사)
+                  const defaultResponses = {
+                    "어린이 男": "무슨 말인지 잘 모르겠어요.",
+                    "어린이 女": "다시 한 번 말해주실래요?",
+                    "청소년 男": "다른 질문은 없나요?",
+                    "청소년 女": "무슨 뜻이에요?",
+                    "중년 男": "흠, 좀 더 자세히 말씀해주세요.",
+                    "중년 女": "이해가 잘 안 되네요."
+                  };
+                  const defaultResponse = defaultResponses[CHARACTERS[characterIndex].name] || "무슨 말씀이신지...";
+                  appendMessage(defaultResponse, 'bot-message');
+                }
+
+
+            } catch (error) {
+                console.error("Could not fetch chat response:", error);
+                appendMessage('오류가 발생했습니다.', 'bot-message');
+            } finally {
+                userMessageInput.disabled = false;
+                sendButton.disabled = false;
+                userMessageInput.focus();
+                showLoading(false); // 로딩 종료
+            }
+        }
+
+        function appendMessage(message, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.classList.add('chat-message', className);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 캐릭터 변경
+        characterDropdown.addEventListener('change', () => {
+            const selectedCharacterIndex = characterDropdown.value;
+            const selectedEmotion = emotionDropdown.value;
+            updateCharacterDisplay(selectedCharacterIndex, selectedEmotion);
+        });
+
+        // 감정 변경
+        emotionDropdown.addEventListener('change', () => {
+            const selectedCharacterIndex = characterDropdown.value;
+            const selectedEmotion = emotionDropdown.value;
+            updateCharacterDisplay(selectedCharacterIndex, selectedEmotion);
+        });
+
+        // 전송 버튼
+        sendButton.addEventListener('click', sendMessage);
+
+        // 엔터키
+        userMessageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // --- 메뉴 클릭 이벤트 ---
+        menuItems.forEach(item => {
+            item.addEventListener('click', async () => {
+                currentMenuId = item.dataset.menuId;
+
+                // 메뉴 활성화/비활성화
+                menuItems.forEach(mi => mi.classList.remove('active'));
+                item.classList.add('active');
+
+                // 모든 영역 숨김, 대화 내용 초기화
+                practiceArea.classList.remove('active');
+                gameArea.classList.remove('active');
+                chatMessages.innerHTML = '';
+
+                // 메뉴 타입에 따른 처리
+                if (currentMenuId === 'a' || currentMenuId === 'b' || currentMenuId === 'c' || currentMenuId === 'd') {
+                    await startPractice(currentMenuId);
+                } else if (currentMenuId === 'e' || currentMenuId === 'f') {
+                    await startGame(currentMenuId);
+                } else if (currentMenuId === 'g') {
+                    // 환경설정 (TODO)
+                }
+            });
+        });
+
+        // --- 연습 관련 함수 ---
+        async function startPractice(menuId) {
+          try {
+            let data = { content: ""};
+
+            if (menuId === 'a') {
+                data.content = PRACTICE_CONTENT.a();
+            } else if (menuId === 'b') {
+                data.content = PRACTICE_CONTENT.b();
+            } else if (menuId === 'c') {
+                data.content = PRACTICE_CONTENT.c();
+            } else if(menuId == 'd'){
+                data.content = PRACTICE_CONTENT.d();
+            }
+            practiceContent.textContent = data.content;
+            practiceArea.classList.add('active');
+            typingInput.value = '';
+            practiceResult.textContent = '';
+            typingInput.focus();
+
+            const characterIndex = characterDropdown.value;
+            updateCharacterDisplay(characterIndex, "normal");
+
+            // 자리, 낱말 연습
+            if (menuId === 'a' || menuId === 'b') {
+                typingInput.addEventListener('input', checkTyping);
+            } else {
+                typingInput.removeEventListener('input', checkTyping);
+            }
+
+            // 짧은 글, 긴 글 연습
+            if (menuId === 'c' || menuId === 'd') {
+                startSentencePractice();
+            } else {
+                if (practiceInterval) {
+                    clearInterval(practiceInterval);
+                    practiceInterval = null;
+                }
+            }
+
+          } catch (error) {
+            console.error("Error starting practice:", error);
+            alert('연습 시작 중 오류가 발생했습니다.');
+          }
+        }
+
+        function checkTyping() {
+          const originalText = practiceContent.textContent;
+          const typedText = typingInput.value;
+
+          if (originalText.startsWith(typedText)) {
+            practiceResult.textContent = "정확합니다!";
+            practiceResult.style.color = "green";
+            const characterIndex = characterDropdown.value;
+            updateCharacterDisplay(characterIndex, "positive");
+
+            if (originalText === typedText) {
+              practiceResult.textContent = "연습 완료!";
+              const characterIndex = characterDropdown.value;
+              updateCharacterDisplay(characterIndex, "normal");
+              startPractice(currentMenuId);
+            }
+          } else {
+            practiceResult.textContent = "다시 입력하세요.";
+            practiceResult.style.color = "red";
+            const characterIndex = characterDropdown.value;
+            updateCharacterDisplay(characterIndex, "negative");
+          }
+        }
+
+        function startSentencePractice() {
+          let startTime = new Date();
+          let endTime = null;
+          let typedText = "";
+
+          practiceResult.textContent = "";
+          typingInput.value = "";
+
+          if (practiceInterval) {
+            clearInterval(practiceInterval);
+          }
+
+          practiceInterval = setInterval(() => {
+            typedText = typingInput.value;
+            endTime = new Date();
+            let elapsedTime = (endTime - startTime) / 1000;
+            if (elapsedTime < 1) elapsedTime = 1;
+
+            let typedWords = typedText.length
+            let speed = Math.round((typedWords / elapsedTime) * 60);
+
+            let originalText = practiceContent.textContent;
+            let correctWords = 0;
+            for (let i = 0; i < typedText.length; i++) {
+              if (typedText[i] === originalText[i]) {
+                correctWords++;
+              }
+            }
+
+            let accuracy = typedText.length > 0 ? Math.round((correctWords / typedText.length) * 100) : 0;
+
+            practiceResult.innerHTML = `타수: ${speed} 타/분 | 정확도: ${accuracy}%`;
+
+            const characterIndex = characterDropdown.value;
+            if (accuracy >= 90) {
+              updateCharacterDisplay(characterIndex, "positive");
+            } else if (accuracy >= 50) {
+              updateCharacterDisplay(characterIndex, "normal");
+            } else {
+              updateCharacterDisplay(characterIndex, "negative");
+            }
+
+            if (typedText === originalText) {
+              practiceResult.innerHTML = `연습 완료! 타수: ${speed} 타/분 | 정확도: ${accuracy}%`;
+              clearInterval(practiceInterval);
+
+              const characterIndex = characterDropdown.value;
+              updateCharacterDisplay(characterIndex, "normal");
+              startPractice(currentMenuId);
+            }
+          }, 1000);
+        }
+
+        // --- 게임 관련 함수 (TODO) ---
+        async function startGame(menuId) {
+            practiceArea.classList.remove('active');
+            chatMessages.innerHTML = '';
+
+            // TODO: 게임 UI 및 로직 구현 (자리 연습, 낱말 연습과 유사하게)
+            if (menuId === 'e'){
+                gameContent.textContent = GAME_CONTENT.e();
+            } else {
+                gameContent.textContent = GAME_CONTENT.f();
+            }
+
+            gameArea.classList.add('active');
+        }
+
+        loadApiKey();       // 페이지 로드 시 API 키 불러오기
+        initializeCharacter(); // 초기 캐릭터 설정
+    });
+    </script>
+</body>
+</html>
+```
+
+주요 변경 사항:
+
+1.  **Gemini API Key 입력 및 저장:**
+    *   HTML에 API 키 입력 필드(`api-key`)와 저장 버튼(`save-api-key`)을 추가했습니다.
+    *   `saveApiKeyButton` 클릭 이벤트 핸들러를 추가하여, 입력된 API 키를 `localStorage`에 저장합니다.
+    *   `loadApiKey()` 함수를 추가하여 페이지 로드 시 `localStorage`에서 API 키를 불러옵니다.
+    *   `callGeminiAPI`함수에서 API호출 전에, `loadApiKey()`를 호출하여 저장된 키를 가져옵니다.
+2.  **Gemini API 호출 함수 (`callGeminiAPI`) 분리:**
+    *   Gemini API 호출 로직을 별도의 `callGeminiAPI` 함수로 분리하여 코드를 더 깔끔하게 만들었습니다.
+    *   API 키가 없으면 `null`을 리턴하고, Gemini API를 호출하지 않습니다.
+    *   API 호출 실패 시, 에러 메시지를 사용자에게 보여주고, 기본 응답 문자열을 반환합니다.
+3.  **기본 응답 (Fallback):**
+    *   `sendMessage` 함수에서 Gemini API 응답이 `null` (API 키가 없거나 호출 실패)일 경우, 캐릭터별 기본 응답을 표시하도록 했습니다.
+    *    `defaultResponses` 객체에 캐릭터별 기본 대사를 저장.
+4.  **로딩 메시지:**
+    *   HTML에 `loading-message` 요소를 추가하고, CSS로 스타일을 지정했습니다.
+    *   `showLoading(true/false)` 함수를 추가하여 로딩 메시지를 표시하거나 숨깁니다.
+    *   `sendMessage` 함수에서 API 호출 전/후에 `showLoading`을 호출하여 로딩 상태를 표시합니다.
+5.  **`async`/`await`:**  `updateCharacterDisplay`, `sendMessage`, `startPractice`, `startGame` 함수를 `async` 함수로 변경하고, `fetch` 호출 시 `await`를 사용하여 비동기 처리를 올바르게 합니다.
+6.  **`PRACTICE_CONTENT` , `GAME_CONTENT` 객체 사용:**
+    * 연습/게임 컨텐츠를 함수가 아닌 객체에 저장, 함수 호출을 제거하여 코드를 간단하게 만듦.
+7. **`fetch` 제거, `data` 직접 할당:**  `startPractice`와 `startGame`에서 `fetch`를 사용하지 않고, `PRACTICE_CONTENT`와 `GAME_CONTENT` 객체에서 직접 데이터를 가져와 할당합니다. (GitHub Pages
