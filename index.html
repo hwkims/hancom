@@ -5,198 +5,199 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>한컴타자연습 캐릭터 챗</title>
     <style>
-      /* CSS (Apple 디자인, 카카오톡/iMessage 스타일, 반응형) */
-      body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-          background-color: #f0f2f5;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          margin: 0;
-          color: #1c1e21;
-      }
-
-      .container {
-          background-color: white;
-          border-radius: 16px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.2);
-          width: 95%;
-          max-width: 600px;
-          display: flex;
-          flex-direction: column;
-          height: 90vh; /* 화면 높이의 90% */
-          overflow: hidden; /* 내부 스크롤 가능 */
-      }
-
-      h1 {
-          text-align: center;
-          margin: 20px 0; /* 상하 여백 */
-          color: #007aff;
-          font-size: 24px;
-          font-weight: 600;
-      }
-      /* API 키 입력 필드 스타일 */
-      .api-key-input {
-          text-align: center;
-          margin-bottom: 15px;
-      }
-
-      #api-key {
-          padding: 10px;
-          border-radius: 8px;
-          border: 1px solid #d0d0d0;
-          font-size: 16px;
-          margin-right: 8px;
-          width: 60%; /* 너비 조정 */
-          box-sizing: border-box;
-      }
-
-      #save-api-key {
-          padding: 10px 18px;
-          border-radius: 8px;
-          background-color: #007aff;
-          color: white;
-          font-size: 16px;
-          cursor: pointer;
-          border: none; /* 테두리 제거 */
-          transition: background-color 0.2s;
-      }
-      #save-api-key:hover {
-          background-color: #0066cc;
-      }
-
-      .content-wrapper {
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1; /* 남은 공간 채우기 */
-          overflow-y: auto; /* 내용 스크롤 */
-      }
-
-      .character-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 3열 */
-        gap: 10px;
-        justify-items: center;
-        margin-bottom: 20px;
-        padding: 0 10px; /* 양쪽 여백 */
-    }
-      .character-grid-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        transition: transform 0.1s;
-        padding: 5px;
-        border-radius: 10px;
-        border: 2px solid transparent; /* 초기 투명 테두리 */
-    }
-
-      .character-grid-item:hover {
-        transform: scale(1.05); /* 살짝 확대 */
-      }
-      .character-grid-item.selected {
-        border-color: #007aff; /* 선택된 캐릭터 테두리 */
-        background-color: #e4f0ff; /*선택 배경색*/
-      }
-
-      .character-grid-item img {
-          width: 60px; /* 이미지 크기 */
-          height: 70px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          object-fit: contain;
-          margin-bottom: 5px;
-      }
-
-      .character-name {
-          font-size: 14px;
-          color: #404040;
-      }
-
-      .chat-container {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 15px; /* 내용 패딩 */
-      }
-
-      .chat-messages {
-        flex-grow: 1;
-        overflow-y: auto; /* 내용 스크롤 */
-        padding: 10px;
-        margin-bottom: 10px;
-        border-top: 1px solid #d0d0d0;
-      }
-
-      .chat-message {
-            margin-bottom: 8px;
-            padding: 8px 12px;
-            border-radius: 16px; /* 더 둥글게 */
-            word-wrap: break-word;
-            max-width: 75%; /* 최대 너비 */
-        }
-
-      .user-message {
-          background-color: #DCF8C6;  /* 연한 녹색 (카톡) */
-          color: #1c1e21;
-          text-align: right;
-          margin-left: auto;
-          border: 1px solid #c3e6cb; /* Optional: 옅은 테두리 */
-          align-self: flex-end; /* 오른쪽 정렬 */
-      }
-
-      .bot-message {
-        background-color: #fff;  /* 흰색 배경 */
-        color: #1c1e21;
-        margin-right: auto;
-        border: 1px solid #d0d0d0; /* 옅은 테두리 */
-        display: flex; /* Flexbox 사용 */
-        align-items: center; /* 세로 중앙 정렬 */
-      }
-      /* 봇 메시지 원형 이미지 */
-      .bot-message .bot-avatar {
-        width: 30px; /* 이미지 크기 */
-        height: 30px;
-        border-radius: 50%; /* 원형 */
-        border: 1px solid #ddd;
-        margin-right: 10px;
-        flex-shrink: 0; /* 축소 방지 */
-        object-fit: cover;
-      }
-
-        .user-input {
+        /* CSS (Apple 디자인, 카카오톡/iMessage 스타일, 반응형) */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            background-color: #f0f2f5;
             display: flex;
-            gap: 10px;
-            width: 100%;
+            justify-content: center;
             align-items: center;
-            padding: 10px;
-            border-top: 1px solid #d0d0d0; /* 상단 구분선 */
+            min-height: 100vh;
+            margin: 0;
+            color: #1c1e21;
         }
 
-        #user-message {
-            flex-grow: 1;
-            padding: 12px;
-            border-radius: 20px;  /*  둥근 입력 필드 */
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            overflow: hidden; /* 내부 스크롤 가능 */
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #007aff;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* API 키 입력 필드 스타일 */
+        .api-key-input {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #api-key {
+            padding: 10px;
+            border-radius: 8px;
             border: 1px solid #d0d0d0;
             font-size: 16px;
-            background-color: white;
+            margin-right: 8px;
+            width: 60%;
+            box-sizing: border-box;
         }
-        #send-button {
+
+        #save-api-key {
             padding: 10px 18px;
-            border-radius: 20px;  /* 둥근 버튼 */
-            border: none;
+            border-radius: 8px;
             background-color: #007aff;
             color: white;
             font-size: 16px;
             cursor: pointer;
+            border: none; /* 테두리 제거 */
             transition: background-color 0.2s;
-            white-space: nowrap;
         }
-        #send-button:hover {
-          background-color: #0066cc;
+        #save-api-key:hover {
+            background-color: #0066cc;
         }
 
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* 남은 공간 채우기 */
+            overflow-y: auto; /* 내용 스크롤 */
+        }
+
+        .character-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr); /* 3열 */
+          gap: 10px;
+          justify-items: center;
+          margin-bottom: 20px;
+          padding: 0 10px; /* 양쪽 여백 */
+      }
+        .character-grid-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          cursor: pointer;
+          transition: transform 0.1s;
+          padding: 5px;
+          border-radius: 10px;
+          border: 2px solid transparent; /* 초기 투명 테두리 */
+      }
+
+        .character-grid-item:hover {
+          transform: scale(1.05); /* 살짝 확대 */
+        }
+        .character-grid-item.selected {
+          border-color: #007aff; /* 선택된 캐릭터 테두리 */
+          background-color: #e4f0ff; /*선택 배경색*/
+        }
+
+        .character-grid-item img {
+            width: 60px; /* 이미지 크기 */
+            height: 70px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+/* 제거: 캐릭터 이름
+        .character-name {
+            font-size: 14px;
+            color: #404040;
+        }
+*/
+        .chat-container {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 15px; /* 내용 패딩 */
+        }
+
+        .chat-messages {
+          flex-grow: 1;
+          overflow-y: auto; /* 내용 스크롤 */
+          padding: 10px;
+          margin-bottom: 10px;
+          border-top: 1px solid #d0d0d0;
+        }
+
+        .chat-message {
+              margin-bottom: 8px;
+              padding: 8px 12px;
+              border-radius: 16px; /* 더 둥글게 */
+              word-wrap: break-word;
+              max-width: 75%; /* 최대 너비 */
+          }
+
+        .user-message {
+            background-color: #DCF8C6;  /* 연한 녹색 (카톡) */
+            color: #1c1e21;
+            text-align: right;
+            margin-left: auto;
+            border: 1px solid #c3e6cb; /* Optional: 옅은 테두리 */
+            align-self: flex-end; /* 오른쪽 정렬 */
+        }
+
+        .bot-message {
+          background-color: #fff;  /* 흰색 배경 */
+          color: #1c1e21;
+          margin-right: auto;
+          border: 1px solid #d0d0d0; /* 옅은 테두리 */
+          display: flex; /* Flexbox 사용 */
+          align-items: center; /* 세로 중앙 정렬 */
+        }
+        /* 봇 메시지 원형 이미지 */
+        .bot-message .bot-avatar {
+          width: 30px; /* 이미지 크기 */
+          height: 30px;
+          border-radius: 50%; /* 원형 */
+          border: 1px solid #ddd;
+          margin-right: 10px;
+          flex-shrink: 0; /* 축소 방지 */
+          object-fit: cover;
+        }
+
+          .user-input {
+              display: flex;
+              gap: 10px;
+              width: 100%;
+              align-items: center;
+              padding: 10px;
+              border-top: 1px solid #d0d0d0; /* 상단 구분선 */
+          }
+
+          #user-message {
+              flex-grow: 1;
+              padding: 12px;
+              border-radius: 20px;  /*  둥근 입력 필드 */
+              border: 1px solid #d0d0d0;
+              font-size: 16px;
+              background-color: white;
+          }
+          #send-button {
+              padding: 10px 18px;
+              border-radius: 20px;  /* 둥근 버튼 */
+              border: none;
+              background-color: #007aff;
+              color: white;
+              font-size: 16px;
+              cursor: pointer;
+              transition: background-color 0.2s;
+              white-space: nowrap;
+          }
+          #send-button:hover {
+            background-color: #0066cc;
+          }
 
         /* 로딩 메시지 */
         .loading-message {
@@ -248,293 +249,329 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      //const characterDropdown = document.getElementById('character-dropdown'); // 더 이상 사용 안함
-      const characterGrid = document.getElementById('character-grid'); // 추가: 캐릭터 그리드
-      const characterImage = document.getElementById('character-image'); //이제 안 씀.
-      const characterNameDisplay = document.getElementById('character-name'); // 이제 안 씀.
-      const chatMessages = document.getElementById('chat-messages');
-      const userMessageInput = document.getElementById('user-message');
-      const sendButton = document.getElementById('send-button');
-      const apiKeyInput = document.getElementById('api-key');
-      const saveApiKeyButton = document.getElementById('save-api-key');
-      const loadingMessage = document.getElementById('loading-message');
+      document.addEventListener('DOMContentLoaded', () => {
+        const characterGrid = document.getElementById('character-grid');
+        const chatMessages = document.getElementById('chat-messages');
+        const userMessageInput = document.getElementById('user-message');
+        const sendButton = document.getElementById('send-button');
+        const apiKeyInput = document.getElementById('api-key');
+        const saveApiKeyButton = document.getElementById('save-api-key');
+        const loadingMessage = document.getElementById('loading-message');
 
-      // 캐릭터 정보 (이미지 경로, 폴더 구조 반영)
-      const CHARACTERS = {
-        0: { name: "어린이 男", normal: "1/1.webp", positive: "2/1.webp", negative: "3/1.webp" },
-        1: { name: "어린이 女", normal: "1/2.webp", positive: "2/2.webp", negative: "3/2.webp" },
-        2: { name: "청소년 男", normal: "1/3.webp", positive: "2/3.webp", negative: "3/3.webp" },
-        3: { name: "청소년 女", normal: "1/4.webp", positive: "2/4.webp", negative: "3/4.webp" },
-        4: { name: "중년 男", normal: "1/5.webp", positive: "2/5.webp", negative: "3/5.webp" },
-        5: { name: "중년 女", normal: "1/6.webp", positive: "2/6.webp", negative: "3/6.webp" },
-      };
-      let selectedCharacterIndex = 0; // 기본 선택 캐릭터
+        // 캐릭터 정보 (이미지 경로, 폴더 구조 반영)
+        const CHARACTERS = {
+          0: { name: "어린이 男", normal: "1/1.webp", positive: "2/1.webp", negative: "3/1.webp" },
+          1: { name: "어린이 女", normal: "1/2.webp", positive: "2/2.webp", negative: "3/2.webp" },
+          2: { name: "청소년 男", normal: "1/3.webp", positive: "2/3.webp", negative: "3/3.webp" },
+          3: { name: "청소년 女", normal: "1/4.webp", positive: "2/4.webp", negative: "3/4.webp" },
+          4: { name: "중년 男", normal: "1/5.webp", positive: "2/5.webp", negative: "3/5.webp" },
+          5: { name: "중년 女", normal: "1/6.webp", positive: "2/6.webp", negative: "3/6.webp" },
+        };
+        let selectedCharacterIndex = 0; // 기본 선택 캐릭터
 
-      // 로딩 메시지 표시/숨김 함수
-      function showLoading(show) {
-          loadingMessage.style.display = show ? 'block' : 'none';
-      }
+        // 로딩 메시지 표시/숨김 함수
+        function showLoading(show) {
+            loadingMessage.style.display = show ? 'block' : 'none';
+        }
 
-      // API 키 저장
+      // API 키 저장 + 마스킹
       saveApiKeyButton.addEventListener('click', () => {
           const apiKey = apiKeyInput.value.trim();
           if (apiKey) {
               localStorage.setItem('geminiApiKey', apiKey);
               alert('API 키가 저장되었습니다.');
-              apiKeyInput.value = '';
+              // apiKeyInput.value = ''; // 입력 필드 초기화 안함
+              maskApiKey(); // 마스킹 함수 호출
           } else {
               alert('API 키를 입력해주세요.');
           }
       });
 
-      // API 키 불러오기 + 모달 표시
+      // API 키 불러오기  + 마스킹
       function loadApiKey() {
-          return localStorage.getItem('geminiApiKey');
+          const savedApiKey = localStorage.getItem('geminiApiKey');
+          if (savedApiKey) {
+            apiKeyInput.value = savedApiKey; // 입력 필드에 값 채움.
+            maskApiKey();
+          }
+          return savedApiKey;
       }
 
-        // 캐릭터 그리드 생성
-        function createCharacterGrid() {
-            for (const index in CHARACTERS) {
-                const character = CHARACTERS[index];
-                const gridItem = document.createElement('div');
-                gridItem.classList.add('character-grid-item');
-                gridItem.dataset.index = index; // data-index 속성
-
-                const img = document.createElement('img');
-                img.src = character.normal; // 기본 이미지
-                img.alt = character.name;
-                //이미지 로드 실패 시, 기본 이미지.
-                img.onerror = () => { img.src = "no-image.webp" };
-
-                const nameDiv = document.createElement('div');
-                nameDiv.classList.add('character-name');
-                nameDiv.textContent = character.name;
-
-                gridItem.appendChild(img);
-                gridItem.appendChild(nameDiv);
-                characterGrid.appendChild(gridItem);
-
-                // 클릭 이벤트 리스너 (캐릭터 선택)
-                gridItem.addEventListener('click', () => {
-                    selectCharacter(index);
-                });
-            }
+      // API 키 마스킹 함수
+      function maskApiKey() {
+        const apiKey = apiKeyInput.value;
+        if (apiKey) {
+          apiKeyInput.type = 'password'; // type을 password로 설정
+          apiKeyInput.value = '*'.repeat(apiKey.length); // 별표로 마스킹
         }
+      }
+
+      // 캐릭터 그리드 생성
+      function createCharacterGrid() {
+          for (const index in CHARACTERS) {
+              const character = CHARACTERS[index];
+              const gridItem = document.createElement('div');
+              gridItem.classList.add('character-grid-item');
+              gridItem.dataset.index = index;
+
+              const img = document.createElement('img');
+              img.src = character.normal;
+              img.alt = character.name;
+              img.onerror = () => { img.src = "no-image.webp" };
+
+
+              gridItem.appendChild(img);
+              // gridItem.appendChild(nameDiv); // 이름 제거
+              characterGrid.appendChild(gridItem);
+
+              // 클릭 이벤트 리스너 (캐릭터 선택)
+              gridItem.addEventListener('click', () => {
+                  selectCharacter(index);
+              });
+          }
+      }
+
       // 캐릭터 선택 함수
-        function selectCharacter(index) {
-            selectedCharacterIndex = index;
+      function selectCharacter(index) {
+          selectedCharacterIndex = index;
 
-            // 모든 그리드 아이템에서 'selected' 클래스 제거
-            document.querySelectorAll('.character-grid-item').forEach(item => {
-                item.classList.remove('selected');
-            });
+          // 모든 그리드 아이템에서 'selected' 클래스 제거
+          document.querySelectorAll('.character-grid-item').forEach(item => {
+              item.classList.remove('selected');
+          });
 
-            // 선택된 아이템에 'selected' 클래스 추가
-            const selectedItem = document.querySelector(`.character-grid-item[data-index="${index}"]`);
-            if (selectedItem) {
-                selectedItem.classList.add('selected');
-            }
-            //updateCharacterDisplay(index, 'normal'); // 필요하다면 여기서 호출
-        }
+          // 선택된 아이템에 'selected' 클래스 추가
+          const selectedItem = document.querySelector(`.character-grid-item[data-index="${index}"]`);
+          if (selectedItem) {
+              selectedItem.classList.add('selected');
+          }
+      }
 
 
-       // Gemini API 호출 함수
-        async function callGeminiAPI(prompt) {
-            const apiKey = loadApiKey();
-            if (!apiKey) {
-                return null; // Gemini API 호출 안 함
-            }
+      // Gemini API 호출 함수
+      async function callGeminiAPI(prompt) {
+          const apiKey = loadApiKey();
+          if (!apiKey) {
+            alert('Gemini API 키가 없습니다. API 키를 입력하고 저장해주세요.');
+            return null;
+          }
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-            // JSON 요청 형식
-            const requestBody = {
-              contents: [{ parts: [{ text: prompt }] }],
-              "safetySettings": [
-                {
-                   "category": "HARM_CATEGORY_HARASSMENT",
-                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                },
-                {
-                   "category": "HARM_CATEGORY_HATE_SPEECH",
-                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                },
-                {
-                   "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                },
-                {
-                  "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                  "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                }
-              ]
-            };
+          const requestBody = {
+            contents: [{ parts: [{ text: prompt }] }],
+            "safetySettings": [
+              {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+              }
+            ]
+          };
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestBody),
-                });
+          try {
+              const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(requestBody),
+              });
 
-                if (!response.ok) {
-                  const errorData = await response.json();
-                  const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생';
-                  throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
-                }
+              if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생';
+                throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
+              }
 
-                const data = await response.json();
-                return data; // JSON 객체 반환
+              const data = await response.json();
+              return data;
 
-            } catch (error) {
-                console.error('Error calling Gemini API:', error);
-                alert(`Gemini API 호출 오류: ${error.message}`);
-                return null; // 오류 시 null 반환 (기본 응답 처리)
-            }
-        }
+          } catch (error) {
+              console.error('Error calling Gemini API:', error);
+              alert(`Gemini API 호출 오류: ${error.message}`);
+              return null;
+          }
+      }
 
-      //캐릭터 이미지 업데이트 , 여기 많이 수정됨.
-      function updateCharacterDisplay(characterIndex, emotion) {
-            const character = CHARACTERS[characterIndex];
+       //캐릭터 이미지 업데이트 , 여기 많이 수정됨.
+        function updateCharacterDisplay(characterIndex, emotion) {
+          const character = CHARACTERS[characterIndex];
             if (!character) {
                 console.error("Character not found for index:", characterIndex);
                 return;
             }
 
-            let imagePath = character.normal; // 기본 이미지
+          let imagePath = character.normal; // 기본 이미지
 
-            // 감정에 따라 이미지 변경 (폴더 구조 사용)
-            if (emotion === 'positive' && character.positive) {
-                imagePath = character.positive;
-            } else if (emotion === 'negative' && character.negative) {
-                imagePath = character.negative;
+          // 감정에 따라 이미지 변경 (폴더 구조 사용)
+          if (emotion === 'positive' && character.positive) {
+              imagePath = character.positive;
+          } else if (emotion === 'negative' && character.negative) {
+              imagePath = character.negative;
+          }
+
+          // 이미지 폴더 및 파일 존재 확인 (최종 폴백)
+          const img = new Image(); // 새 이미지 객체
+          img.onload = () => {  // 이미지 로드 성공 시
+            //캐릭터 이미지 변경
+            const characterImgEl = document.querySelector(`.character-grid-item[data-index="${characterIndex}"] img`);
+            if(characterImgEl){
+              characterImgEl.src = imagePath;
             }
 
-            // 이미지 폴더 및 파일 존재 확인 (최종 폴백)
-            const img = new Image();
-            img.onload = () => { characterImage.src = imagePath; };
-            img.onerror = () => {
-              console.error(`Image not found: ${imagePath}, using default.`);
-              characterImage.src = character.normal; // 없으면 normal
-            };
-            img.src = imagePath;
-            characterNameDisplay.textContent = character.name; //이름 표시.
-        }
+          };
+          img.onerror = () => { // 이미지 로드 실패 시
+            console.error(`Image not found: ${imagePath}, using default.`);
+            const characterImgEl = document.querySelector(`.character-grid-item[data-index="${characterIndex}"] img`);
+            if(characterImgEl){
+              characterImgEl.src = character.normal; // 없으면 normal
+            }
+
+          };
+          img.src = imagePath; // 이미지 로드 시도
+      }
+
+
 
       // 메시지 전송
       async function sendMessage() {
-          //const characterIndex = characterDropdown.value; //select 가 아니라 캐릭터 index
-          const userMessage = userMessageInput.value;
+        const userMessage = userMessageInput.value;
 
-          if (!userMessage.trim()) {
-              alert('메시지를 입력해주세요.');
-              return;
-          }
+        if (!userMessage.trim()) {
+            alert('메시지를 입력해주세요.');
+            return;
+        }
 
-          appendMessage(userMessage, 'user-message');
-          userMessageInput.value = '';
-          userMessageInput.disabled = true;
-          sendButton.disabled = true;
-          showLoading(true); // 로딩 시작
+        appendMessage(userMessage, 'user-message');
+        userMessageInput.value = '';
+        userMessageInput.disabled = true;
+        sendButton.disabled = true;
+        showLoading(true);
 
-          try {
-              // 프롬프트 구성 (감정 정보는 Gemini가 판단)
-              const prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[selectedCharacterIndex].name}입니다. 사용자 메시지에 1~2 문장으로 간결하게 응답하고, 응답 내용에 맞는 감정(positive, negative, normal)을 JSON 형식으로 함께 출력하세요.
+        try {
+            // 프롬프트 구성 (감정 정보는 Gemini가 판단)
+            const prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[selectedCharacterIndex].name}입니다. 사용자 메시지에 1~2 문장으로 간결하게 응답하고, 응답 내용에 맞는 감정(positive, negative, normal)을 JSON 형식으로 함께 출력하세요.
 
-                사용자 메시지: ${userMessage}
+              사용자 메시지: ${userMessage}
 
-                출력 JSON 형식:
-                {
-                  "response": "응답 메시지",
-                  "emotion": "감정"
-                }
-                `;
+              출력 JSON 형식:
+              {
+                "response": "응답 메시지",
+                "emotion": "감정"
+              }
+              `;
 
+            // Gemini API 호출
+            const geminiData = await callGeminiAPI(prompt);
 
-              // Gemini API 호출
-              const geminiData = await callGeminiAPI(prompt);
-
-              if (geminiData && geminiData.candidates && geminiData.candidates.length > 0) {
-                  // 응답 JSON 파싱
-                  let parsedResponse;
-                  try {
+            if (geminiData && geminiData.candidates && geminiData.candidates.length > 0) {
+                let parsedResponse;
+                try {
                     parsedResponse = JSON.parse(geminiData.candidates[0].content.parts[0].text);
+                } catch (parseError) {
+                    console.error("JSON 파싱 오류:", parseError);
+                    appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
+                    return;
+                }
 
-                  } catch (parseError) {
-                      console.error("JSON 파싱 오류:", parseError);
-                      appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
-                      return;
-                  }
+                if (parsedResponse && parsedResponse.response && parsedResponse.emotion) {
+                    const geminiResponse = parsedResponse.response;
+                    const emotion = parsedResponse.emotion.toLowerCase();
 
-                  // 파싱된 데이터 사용
-                  if (parsedResponse && parsedResponse.response && parsedResponse.emotion) {
-                      const geminiResponse = parsedResponse.response;
-                      const emotion = parsedResponse.emotion.toLowerCase();
+                    // 봇 메시지 앞에 이미지 추가
+                    const botAvatar = document.createElement('img');
 
-                      // 봇 메시지 앞에 이미지 추가.
-                      const botAvatar = document.createElement('img');
-                      botAvatar.src = CHARACTERS[selectedCharacterIndex][emotion] || CHARACTERS[selectedCharacterIndex].normal;  // 감정 이미지 또는 기본 이미지
-                      botAvatar.alt = `${CHARACTERS[selectedCharacterIndex].name} (${emotion})`;
-                      botAvatar.classList.add('bot-avatar');
+                    // 감정별 이미지 설정 (normal, positive, negative), 이미지 없을 때 fallback
+                    if (emotion === 'positive' && CHARACTERS[selectedCharacterIndex].positive) {
+                        botAvatar.src = CHARACTERS[selectedCharacterIndex].positive;
+                    } else if (emotion === 'negative' && CHARACTERS[selectedCharacterIndex].negative) {
+                        botAvatar.src = CHARACTERS[selectedCharacterIndex].negative;
+                    } else {
+                        botAvatar.src = CHARACTERS[selectedCharacterIndex].normal; // 기본 이미지
+                    }
 
-                       // 이미지 로드 실패 시, 기본 이미지
-                      botAvatar.onerror = () => { botAvatar.src = CHARACTERS[selectedCharacterIndex].normal };
+                    botAvatar.alt = `${CHARACTERS[selectedCharacterIndex].name} (${emotion})`;
+                    botAvatar.classList.add('bot-avatar');
+                    // 봇 아바타 이미지 로드 실패 시, 기본 이미지
+                    botAvatar.onerror = () => { botAvatar.src = CHARACTERS[selectedCharacterIndex].normal };
 
-                      // 봇 메시지 div 생성
-                      const botMessageDiv = document.createElement('div');
-                      botMessageDiv.classList.add('chat-message', 'bot-message');
+                    const botMessageDiv = document.createElement('div');
+                    botMessageDiv.classList.add('chat-message', 'bot-message');
+                    botMessageDiv.appendChild(botAvatar);
+                    botMessageDiv.appendChild(document.createTextNode(geminiResponse));
+                    chatMessages.appendChild(botMessageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                      // 이미지와 메시지 추가
-                      botMessageDiv.appendChild(botAvatar);
-                      botMessageDiv.appendChild(document.createTextNode(geminiResponse));
-
-                      // 대화창에 추가.
-                      chatMessages.appendChild(botMessageDiv);
-                      chatMessages.scrollTop = chatMessages.scrollHeight; // 스크롤
-
-                      // 캐릭터 표정 업데이트 (봇 메시지 표시 후)
-                      updateCharacterDisplay(selectedCharacterIndex, emotion);
-
+                    // 캐릭터 표정 업데이트
+                    updateCharacterDisplay(selectedCharacterIndex, emotion);
 
                 } else {
-                      appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
-                  }
+                    appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
+                }
+            } else {
+               // Gemini API 응답이 없을 때 기본 응답
+                const defaultResponses = {
+                  "어린이 男": "무슨 말인지 잘 모르겠어요.",
+                  "어린이 女": "다시 한 번 말해주실래요?",
+                  "청소년 男": "다른 질문은 없나요?",
+                  "청소년 女": "무슨 뜻이에요?",
+                  "중년 男": "흠, 좀 더 자세히 말씀해주세요.",
+                  "중년 女": "이해가 잘 안 되네요."
+                };
+                const defaultResponse = defaultResponses[CHARACTERS[selectedCharacterIndex].name] || "무슨 말씀이신지...";
+                  appendMessage(defaultResponse, 'bot-message');
+            }
+        } catch (error) {
+            console.error("Could not fetch chat response:", error);
+            appendMessage('오류가 발생했습니다.', 'bot-message');
+        } finally {
+            userMessageInput.disabled = false;
+            sendButton.disabled = false;
+            userMessageInput.focus();
+            showLoading(false);
+        }
+    }
 
-              } else {
-                  // Gemini API 응답이 없을 때 기본 응답
-                  const defaultResponses = {
-                    "어린이 男": "무슨 말인지 잘 모르겠어요.",
-                    "어린이 女": "다시 한 번 말해주실래요?",
-                    "청소년 男": "다른 질문은 없나요?",
-                    "청소년 女": "무슨 뜻이에요?",
-                    "중년 男": "흠, 좀 더 자세히 말씀해주세요.",
-                    "중년 女": "이해가 잘 안 되네요."
-                  };
-                  const defaultResponse = defaultResponses[CHARACTERS[selectedCharacterIndex].name] || "무슨 말씀이신지...";
-                    appendMessage(defaultResponse, 'bot-message');
-              }
+        // 메시지 추가 함수 (봇 아바타 이미지 처리)
+        function appendMessage(message, className, imagePath) {
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add('chat-message', className);
 
-          } catch (error) {
-              console.error("Could not fetch chat response:", error);
-              appendMessage('오류가 발생했습니다.', 'bot-message');
-          } finally {
-              userMessageInput.disabled = false;
-              sendButton.disabled = false;
-              userMessageInput.focus();
-              showLoading(false); // 로딩 종료
+          if (className === 'bot-message') {
+              // 봇 메시지인 경우, 이미지와 텍스트를 함께 표시
+              const botAvatar = document.createElement('img');
+                botAvatar.src = imagePath || CHARACTERS[selectedCharacterIndex].normal; // 이미지 경로 또는 기본 이미지
+                botAvatar.alt = CHARACTERS[selectedCharacterIndex].name;
+                botAvatar.classList.add('bot-avatar');
+                botAvatar.onerror = () => { botAvatar.src = CHARACTERS[selectedCharacterIndex].normal; }; // fallback
+                messageDiv.appendChild(botAvatar);
+
+              const textNode = document.createTextNode(message);
+                messageDiv.appendChild(textNode);
+
+
+          } else {
+              // 사용자 메시지인 경우, 텍스트만 표시
+              messageDiv.textContent = message;
           }
+
+          chatMessages.appendChild(messageDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight; // 항상 최신 메시지가 보이도록 스크롤
       }
 
-        function appendMessage(message, className, imagePath) {
-            const messageDiv = document.createElement('div');
-            messageDiv.textContent = message;
-            messageDiv.classList.add('chat-message', className);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+
 
         // 전송 버튼
         sendButton.addEventListener('click', sendMessage);
@@ -546,11 +583,12 @@
             }
         });
 
-        loadApiKey();       // 페이지 로드 시 API 키 불러오기
-        createCharacterGrid(); // 캐릭터 그리드 생성
-        initializeCharacter(); // 초기 캐릭터 설정 (첫 번째 캐릭터)
-        selectCharacter(selectedCharacterIndex); // 기본 캐릭터 선택
+        loadApiKey();            // 페이지 로드 시 API 키 불러오기
+        createCharacterGrid();   // 캐릭터 그리드 생성 (초기화)
+        selectCharacter(selectedCharacterIndex); // 기본 캐릭터 선택 (어린이 男)
+
     });
+
     </script>
 </body>
 </html>
