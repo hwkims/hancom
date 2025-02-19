@@ -179,16 +179,11 @@
             font-size: 16px;
             background-color: white;
         }
-
+      /* 제거: 감정 선택 부분 스타일
         #emotion-dropdown {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #d0d0d0;
-            font-size: 16px;
-            background-color: white;
-            width: auto;
-        }
 
+        }
+      */
         #send-button {
             padding: 10px 18px;
             border-radius: 8px;
@@ -259,11 +254,13 @@
 
                 <div class="user-input">
                     <input type="text" id="user-message" placeholder="메시지를 입력하세요...">
+                    <!-- 제거: 감정 선택 부분
                     <select id="emotion-dropdown">
                         <option value="normal">🙂 평상시</option>
                         <option value="positive">😄 긍정</option>
                         <option value="negative">😠 부정</option>
                     </select>
+                    -->
                     <button id="send-button">전송</button>
                 </div>
             </div>
@@ -276,9 +273,9 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+     document.addEventListener('DOMContentLoaded', () => {
       const characterDropdown = document.getElementById('character-dropdown');
-      const emotionDropdown = document.getElementById('emotion-dropdown');
+      // 제거: const emotionDropdown = document.getElementById('emotion-dropdown');
       const characterImage = document.getElementById('character-image');
       const characterNameDisplay = document.getElementById('character-name');
       const chatMessages = document.getElementById('chat-messages');
@@ -289,14 +286,14 @@
       const saveApiKeyButton = document.getElementById('save-api-key');
       const loadingMessage = document.getElementById('loading-message');
 
-      // 캐릭터 정보 (이미지 경로 포함, 폴더 구조 반영)
+      // 캐릭터 정보 (이미지 경로, *폴더 구조* 반영)
       const CHARACTERS = {
-          0: { name: "어린이 男", normal: "1/1.webp", positive: "1/1_positive.webp", negative: "1/1_negative.webp" },
-          1: { name: "어린이 女", normal: "1/2.webp", positive: "1/2_positive.webp", negative: "1/2_negative.webp" },
-          2: { name: "청소년 男", normal: "2/3.webp", positive: "2/3_positive.webp", negative: "2/3_negative.webp" },
-          3: { name: "청소년 女", normal: "2/4.webp", positive: "2/4_positive.webp", negative: "2/4_negative.webp" },
-          4: { name: "중년 男", normal: "3/5.webp", positive: "3/5_positive.webp", negative: "3/5_negative.webp" },
-          5: { name: "중년 女", normal: "3/6.webp", positive: "3/6_positive.webp", negative: "3/6_negative.webp" },
+        0: { name: "어린이 男", normal: "1/1.webp", positive: "2/1.webp", negative: "3/1.webp" },
+        1: { name: "어린이 女", normal: "1/2.webp", positive: "2/2.webp", negative: "3/2.webp" },
+        2: { name: "청소년 男", normal: "1/3.webp", positive: "2/3.webp", negative: "3/3.webp" },
+        3: { name: "청소년 女", normal: "1/4.webp", positive: "2/4.webp", negative: "3/4.webp" },
+        4: { name: "중년 男", normal: "1/5.webp", positive: "2/5.webp", negative: "3/5.webp" },
+        5: { name: "중년 女", normal: "1/6.webp", positive: "2/6.webp", negative: "3/6.webp" },
       };
 
       // 로딩 메시지 표시/숨김 함수
@@ -342,8 +339,28 @@
             }
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            // 변경: 요청 형식을 JSON으로
             const requestBody = {
-                contents: [{ parts: [{ text: prompt }] }],
+              contents: [{ parts: [{ text: prompt }] }],
+              "safetySettings": [ // 안전 설정 추가 (필요에 따라 조정)
+                {
+                   "category": "HARM_CATEGORY_HARASSMENT",
+                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                   "category": "HARM_CATEGORY_HATE_SPEECH",
+                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                   "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                   "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                },
+                {
+                  "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                  "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                }
+              ]
             };
 
             try {
@@ -352,75 +369,59 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(requestBody),
+                    body: JSON.stringify(requestBody), // JSON 형식으로
                 });
 
                 if (!response.ok) {
                   const errorData = await response.json(); // 에러 응답 파싱
-                    const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생'; //에러 메시지
-                    throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
+                  const errorMessage = errorData.error?.message || 'Gemini API 호출 중 알 수 없는 오류 발생'; //에러 메시지
+                  throw new Error(`Gemini API error: ${response.status} - ${errorMessage}`);
                 }
 
                 const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
+                return data; // JSON 객체 반환
+
             } catch (error) {
                 console.error('Error calling Gemini API:', error);
                 alert(`Gemini API 호출 오류: ${error.message}`);
-                return "Gemini API 호출 중 오류가 발생했습니다."; // 오류 시 기본 응답
+                return null; // 오류 시 null 반환 (기본 응답 처리)
             }
         }
 
-
-        // 캐릭터 이미지/이름 업데이트
-        function updateCharacterDisplay(characterIndex, emotion) {
-            const character = CHARACTERS[characterIndex];
-            if (!character) {
-                console.error("Character not found for index:", characterIndex);
-                return;
-            }
-
-            let imagePath = character.normal;
-
-            // 감정, 캐릭터에 따른 이미지 변경
-            if (character.name === "어린이 女") { // 어린이 여자 예외처리
-                if (emotion === 'positive' && character.negative) {
-                    imagePath = character.negative;  //부정 > 긍정
-                } else if (emotion === 'negative' && character.positive) {
-                    imagePath = character.positive; // 긍정 > 부정
-                }
-            } else { // 다른 캐릭터
-                const folderNum = Math.floor(characterIndex / 6) + 1;
-                const fileNum = (characterIndex % 6) + 1;
-                // 1_1_positive.webp, 1_1_negative.webp 와 같이 파일 이름 구성.
-                if (emotion === 'positive') {
-                    imagePath = `${folderNum}/${fileNum}_positive.webp`;
-                } else if (emotion === 'negative') {
-                    imagePath = `${folderNum}/${fileNum}_negative.webp`;
-                } else {
-                    imagePath = `${folderNum}/${fileNum}.webp`; //normal
-                }
-
-                // 이미지 파일 존재 확인 (fallback)
-                const img = new Image();
-                img.onload = () => {
-                    characterImage.src = imagePath;
-                }
-                img.onerror = () => {
-                    characterImage.src = character.normal;
-                }
-                img.src = imagePath;
-            }
-
-            characterNameDisplay.textContent = character.name;
+      //캐릭터 이미지 업데이트
+      function updateCharacterDisplay(characterIndex, emotion) {
+        const character = CHARACTERS[characterIndex];
+        if (!character) {
+            console.error("Character not found for index:", characterIndex);
+            return;
         }
 
+        let imagePath = character.normal; // 기본 이미지
+
+        // 감정에 따라 이미지 변경 (폴더 구조 사용)
+        if (emotion === 'positive' && character.positive) {
+            imagePath = character.positive;
+        } else if (emotion === 'negative' && character.negative) {
+            imagePath = character.negative;
+        }
+
+        // 이미지 폴더 및 파일 존재 확인 (최종 폴백)
+        const img = new Image();
+        img.onload = () => { characterImage.src = imagePath; };
+        img.onerror = () => {
+            console.error(`Image not found: ${imagePath}, using default.`);
+            characterImage.src = character.normal; // 해당 감정 이미지 없으면 normal
+        };
+        img.src = imagePath;
+        characterNameDisplay.textContent = character.name;
+    }
 
 
       // 메시지 전송
         async function sendMessage() {
             const characterIndex = characterDropdown.value;
             const userMessage = userMessageInput.value;
-            const emotion = emotionDropdown.value;
+            //제거 const emotion = emotionDropdown.value;
 
             if (!userMessage.trim()) {
                 alert('메시지를 입력해주세요.');
@@ -434,28 +435,63 @@
             showLoading(true); // 로딩 시작
 
             try {
-                // 프롬프트 구성
-                const prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다. 감정: ${emotion} 사용자 메시지: ${userMessage} 1~2 문장으로 간결하게 응답해주세요.`;
+                // 프롬프트 구성 (감정 정보는 Gemini가 판단)
+                const prompt = `당신은 한컴타자연습 게임의 캐릭터 ${CHARACTERS[characterIndex].name}입니다. 사용자 메시지에 1~2 문장으로 간결하게 응답하고, 응답 내용에 맞는 감정(positive, negative, normal)을 JSON 형식으로 함께 출력하세요.
+                  
+                  사용자 메시지: ${userMessage}
+                  
+                  출력 JSON 형식:
+                  {
+                    "response": "응답 메시지",
+                    "emotion": "감정"  
+                  }
+                  `;
 
-                // Gemini API 호출 (API 키가 있는 경우에만)
-                const geminiResponse = await callGeminiAPI(prompt);
 
-                if(geminiResponse) {
-                  updateCharacterDisplay(characterIndex, emotion);
-                  appendMessage(geminiResponse, 'bot-message');
+                // Gemini API 호출
+                const geminiData = await callGeminiAPI(prompt);  //응답을 JSON 객체로 받음
+
+                if (geminiData && geminiData.candidates && geminiData.candidates.length > 0) {
+                    // 응답 JSON 파싱
+                    let parsedResponse;
+                    try {
+                      //console.log("geminiData:", geminiData.candidates[0].content.parts[0].text);
+                      parsedResponse = JSON.parse(geminiData.candidates[0].content.parts[0].text);
+
+                    } catch (parseError) {
+                        console.error("JSON 파싱 오류:", parseError);
+                        appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
+                        return;
+                    }
+
+
+                    // 파싱된 데이터 사용
+                    if (parsedResponse && parsedResponse.response && parsedResponse.emotion) {
+                        const geminiResponse = parsedResponse.response;
+                        const emotion = parsedResponse.emotion.toLowerCase(); // 소문자 변환
+
+                        // 응답 메시지 표시 및 캐릭터 표정 업데이트
+                        updateCharacterDisplay(characterIndex, emotion);
+                        appendMessage(geminiResponse, 'bot-message');
+
+                  } else {
+                        appendMessage('응답 형식이 올바르지 않습니다.', 'bot-message');
+                    }
+
                 } else {
-                    // Gemini API 응답이 없을 때의 기본 응답
-                  const defaultResponses = {
-                    "어린이 男": "무슨 말인지 잘 모르겠어요.",
-                    "어린이 女": "다시 한 번 말해주실래요?",
-                    "청소년 男": "다른 질문은 없나요?",
-                    "청소년 女": "무슨 뜻이에요?",
-                    "중년 男": "흠, 좀 더 자세히 말씀해주세요.",
-                    "중년 女": "이해가 잘 안 되네요."
-                  };
-                  const defaultResponse = defaultResponses[CHARACTERS[characterIndex].name] || "무슨 말씀이신지...";
-                  appendMessage(defaultResponse, 'bot-message');
+                    // Gemini API 응답이 없을 때 기본 응답
+                    const defaultResponses = {
+                      "어린이 男": "무슨 말인지 잘 모르겠어요.",
+                      "어린이 女": "다시 한 번 말해주실래요?",
+                      "청소년 男": "다른 질문은 없나요?",
+                      "청소년 女": "무슨 뜻이에요?",
+                      "중년 男": "흠, 좀 더 자세히 말씀해주세요.",
+                      "중년 女": "이해가 잘 안 되네요."
+                    };
+                    const defaultResponse = defaultResponses[CHARACTERS[characterIndex].name] || "무슨 말씀이신지...";
+                      appendMessage(defaultResponse, 'bot-message');
                 }
+
             } catch (error) {
                 console.error("Could not fetch chat response:", error);
                 appendMessage('오류가 발생했습니다.', 'bot-message');
@@ -478,16 +514,12 @@
         // 캐릭터 변경
         characterDropdown.addEventListener('change', () => {
             const selectedCharacterIndex = characterDropdown.value;
-            const selectedEmotion = emotionDropdown.value;
-            updateCharacterDisplay(selectedCharacterIndex, selectedEmotion);
+            // 제거: const selectedEmotion = emotionDropdown.value;
+            updateCharacterDisplay(selectedCharacterIndex, 'normal'); //캐릭터 바꿀때 normal
         });
 
-        // 감정 변경
-        emotionDropdown.addEventListener('change', () => {
-            const selectedCharacterIndex = characterDropdown.value;
-            const selectedEmotion = emotionDropdown.value;
-            updateCharacterDisplay(selectedCharacterIndex, selectedEmotion);
-        });
+        // 제거: 감정 변경 (Gemini가 처리)
+        // emotionDropdown.addEventListener('change', ...);
 
         // 전송 버튼
         sendButton.addEventListener('click', sendMessage);
@@ -498,8 +530,9 @@
                 sendMessage();
             }
         });
+
         loadApiKey();       // 페이지 로드 시 API 키 불러오기
-        initializeCharacter();
+        initializeCharacter(); // 캐릭터 초기화, 설정.
     });
     </script>
 </body>
